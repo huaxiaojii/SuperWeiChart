@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.platform.comapi.map.I;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chatuidemo.R;
@@ -30,6 +31,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import cn.ucai.superwechat.NetDao;
 import cn.ucai.superwechat.OkHttpUtils;
 import cn.ucai.superwechat.SuperWeChatHelper;
+import cn.ucai.superwechat.utils.CommonUtils;
 
 /**
  * register screen
@@ -113,10 +115,19 @@ public class RegisterActivity extends BaseActivity {
 		NetDao.register(mContext, username, nickname, pwd, new OkHttpUtils.OnCompleteListener<Result>() {
 			@Override
 			public void onSuccess(Result result) {
-				if(result!=null&&result.isRetMsg()){
-					registerEMServer();
-				}else{
-					unregisterAppServer();
+				if(result==null){
+					pd.dismiss();
+				}else {
+					if (result.isRetMsg()) {
+						registerEMServer();
+					} else {
+						if(result.getRetCode()== I.MSG_REGISTER_USERNAME_EXISTS){
+							CommonUtils.showMsgShortToast(result.getRetCode());
+							pd.dismiss();
+						}else {
+							unregisterAppServer();
+						}
+					}
 				}
 			}
 
@@ -180,6 +191,7 @@ public class RegisterActivity extends BaseActivity {
 				}
 			}
 		}).start();
+
 	}
 
 	@Override
