@@ -1,15 +1,14 @@
-package com.hyphenate.chatuidemo.db;
+package cn.ucai.superwechat.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.hyphenate.chatuidemo.Constant;
-import com.hyphenate.chatuidemo.DemoApplication;
-import com.hyphenate.chatuidemo.domain.InviteMessage;
-import com.hyphenate.chatuidemo.domain.InviteMessage.InviteMesageStatus;
-import com.hyphenate.chatuidemo.domain.RobotUser;
+import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.domain.RobotUser;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.HanziToPinyin;
@@ -20,17 +19,17 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-public class DemoDBManager {
-    static private DemoDBManager dbMgr = new DemoDBManager();
-    private DbOpenHelper dbHelper;
+public class SuperWeChatDBManager {
+    static private SuperWeChatDBManager dbMgr = new SuperWeChatDBManager();
+    private SuperWeChatHelper dbHelper;
     
-    private DemoDBManager(){
-        dbHelper = DbOpenHelper.getInstance(DemoApplication.getInstance().getApplicationContext());
+    private SuperWeChatDBManager(){
+        dbHelper = SuperWeChatHelper.getInstance(SuperWeChatApplication.getInstance().getApplicationContext());
     }
     
-    public static synchronized DemoDBManager getInstance(){
+    public static synchronized SuperWeChatDBManager getInstance(){
         if(dbMgr == null){
-            dbMgr = new DemoDBManager();
+            dbMgr = new SuperWeChatDBManager();
         }
         return dbMgr;
     }
@@ -241,24 +240,24 @@ public class DemoDBManager {
                 msg.setTime(time);
                 msg.setGroupInviter(groupInviter);
                 
-                if(status == InviteMesageStatus.BEINVITEED.ordinal())
-                    msg.setStatus(InviteMesageStatus.BEINVITEED);
-                else if(status == InviteMesageStatus.BEAGREED.ordinal())
-                    msg.setStatus(InviteMesageStatus.BEAGREED);
-                else if(status == InviteMesageStatus.BEREFUSED.ordinal())
-                    msg.setStatus(InviteMesageStatus.BEREFUSED);
-                else if(status == InviteMesageStatus.AGREED.ordinal())
-                    msg.setStatus(InviteMesageStatus.AGREED);
-                else if(status == InviteMesageStatus.REFUSED.ordinal())
-                    msg.setStatus(InviteMesageStatus.REFUSED);
-                else if(status == InviteMesageStatus.BEAPPLYED.ordinal())
-                    msg.setStatus(InviteMesageStatus.BEAPPLYED);
-                else if(status == InviteMesageStatus.GROUPINVITATION.ordinal())
-                    msg.setStatus(InviteMesageStatus.GROUPINVITATION);
-                else if(status == InviteMesageStatus.GROUPINVITATION_ACCEPTED.ordinal())
-                    msg.setStatus(InviteMesageStatus.GROUPINVITATION_ACCEPTED);
-                else if(status == InviteMesageStatus.GROUPINVITATION_DECLINED.ordinal())
-                    msg.setStatus(InviteMesageStatus.GROUPINVITATION_DECLINED);
+                if(status == InviteMessage.InviteMesageStatus.BEINVITEED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.BEINVITEED);
+                else if(status == InviteMessage.InviteMesageStatus.BEAGREED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.BEAGREED);
+                else if(status == InviteMessage.InviteMesageStatus.BEREFUSED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.BEREFUSED);
+                else if(status == InviteMessage.InviteMesageStatus.AGREED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.AGREED);
+                else if(status == InviteMessage.InviteMesageStatus.REFUSED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.REFUSED);
+                else if(status == InviteMessage.InviteMesageStatus.BEAPPLYED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.BEAPPLYED);
+                else if(status == InviteMessage.InviteMesageStatus.GROUPINVITATION.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.GROUPINVITATION);
+                else if(status == InviteMessage.InviteMesageStatus.GROUPINVITATION_ACCEPTED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.GROUPINVITATION_ACCEPTED);
+                else if(status == InviteMessage.InviteMesageStatus.GROUPINVITATION_DECLINED.ordinal())
+                    msg.setStatus(InviteMessage.InviteMesageStatus.GROUPINVITATION_DECLINED);
                 
                 msgs.add(msg);
             }

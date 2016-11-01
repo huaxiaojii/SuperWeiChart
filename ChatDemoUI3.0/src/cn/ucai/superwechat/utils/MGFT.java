@@ -7,10 +7,10 @@ import cn.ucai.superwechat.ui.LoginActivity;
 import cn.ucai.superwechat.ui.RegisterActivity;
 
 /**
- * Created by User on 2016/11/1.
+ * Created by User on 2016/11/2.
  */
 
-public class MFGT {
+public class MGFT {
     public static void finish(Activity activity){
         activity.finish();
         activity.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
@@ -40,4 +40,5 @@ public class MFGT {
     public static void gotoRegister(Activity context){
         startActivity(context, RegisterActivity.class);
     }
+}
 }

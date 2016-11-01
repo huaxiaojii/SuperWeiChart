@@ -11,14 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hyphenate.chatuidemo.db;
+package cn.ucai.superwechat.db;
 
 import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
 
-import com.hyphenate.chatuidemo.domain.InviteMessage;
+import cn.ucai.superwechat.domain.InviteMessage;
 
 public class InviteMessgeDao {
 	static final String TABLE_NAME = "new_friends_msgs";
@@ -45,7 +45,7 @@ public class InviteMessgeDao {
 	 * @return  return cursor of the message
 	 */
 	public Integer saveMessage(InviteMessage message){
-		return DemoDBManager.getInstance().saveMessage(message);
+		return SuperWeChatDBManager.getInstance().saveMessage(message);
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public class InviteMessgeDao {
 	 * @param values
 	 */
 	public void updateMessage(int msgId,ContentValues values){
-	    DemoDBManager.getInstance().updateMessage(msgId, values);
+	    SuperWeChatDBManager.getInstance().updateMessage(msgId, values);
 	}
 	
 	/**
@@ -62,18 +62,18 @@ public class InviteMessgeDao {
 	 * @return
 	 */
 	public List<InviteMessage> getMessagesList(){
-		return DemoDBManager.getInstance().getMessagesList();
+		return SuperWeChatDBManager.getInstance().getMessagesList();
 	}
 	
 	public void deleteMessage(String from){
-	    DemoDBManager.getInstance().deleteMessage(from);
+	    SuperWeChatDBManager.getInstance().deleteMessage(from);
 	}
 	
 	public int getUnreadMessagesCount(){
-	    return DemoDBManager.getInstance().getUnreadNotifyCount();
+	    return SuperWeChatDBManager.getInstance().getUnreadNotifyCount();
 	}
 	
 	public void saveUnreadMessageCount(int count){
-	    DemoDBManager.getInstance().setUnreadNotifyCount(count);
+	    SuperWeChatDBManager.getInstance().setUnreadNotifyCount(count);
 	}
 }

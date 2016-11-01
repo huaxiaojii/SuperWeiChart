@@ -1,4 +1,4 @@
-package com.hyphenate.chatuidemo;
+package cn.ucai.superwechat;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -27,20 +27,21 @@ import com.hyphenate.chat.EMMessage.Status;
 import com.hyphenate.chat.EMMessage.Type;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.hyphenate.chatuidemo.db.DemoDBManager;
-import com.hyphenate.chatuidemo.db.InviteMessgeDao;
-import com.hyphenate.chatuidemo.db.UserDao;
-import com.hyphenate.chatuidemo.domain.EmojiconExampleGroupData;
-import com.hyphenate.chatuidemo.domain.InviteMessage;
-import com.hyphenate.chatuidemo.domain.InviteMessage.InviteMesageStatus;
-import com.hyphenate.chatuidemo.domain.RobotUser;
-import com.hyphenate.chatuidemo.parse.UserProfileManager;
-import com.hyphenate.chatuidemo.receiver.CallReceiver;
-import com.hyphenate.chatuidemo.ui.ChatActivity;
-import com.hyphenate.chatuidemo.ui.MainActivity;
-import com.hyphenate.chatuidemo.ui.VideoCallActivity;
-import com.hyphenate.chatuidemo.ui.VoiceCallActivity;
-import com.hyphenate.chatuidemo.utils.PreferenceManager;
+import com.hyphenate.chatuidemo.R;
+
+import cn.ucai.superwechat.db.SuperWeChatDBManager;
+import cn.ucai.superwechat.db.InviteMessgeDao;
+import cn.ucai.superwechat.db.UserDao;
+import cn.ucai.superwechat.domain.EmojiconExampleGroupData;
+import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.domain.RobotUser;
+import cn.ucai.superwechat.parse.UserProfileManager;
+import cn.ucai.superwechat.receiver.CallReceiver;
+import cn.ucai.superwechat.ui.ChatActivity;
+import cn.ucai.superwechat.ui.MainActivity;
+import cn.ucai.superwechat.ui.VideoCallActivity;
+import cn.ucai.superwechat.ui.VoiceCallActivity;
+import cn.ucai.superwechat.utils.PreferenceManager;
 import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.controller.EaseUI.EaseEmojiconInfoProvider;
 import com.hyphenate.easeui.controller.EaseUI.EaseSettingsProvider;
@@ -62,7 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class DemoHelper {
+public class SuperWeChatHelper {
     /**
      * data sync listener
      */
@@ -89,7 +90,7 @@ public class DemoHelper {
 
 	private UserProfileManager userProManager;
 
-	private static DemoHelper instance = null;
+	private static SuperWeChatHelper instance = null;
 	
 	private DemoModel demoModel = null;
 	
@@ -129,12 +130,12 @@ public class DemoHelper {
 
     private boolean isGroupAndContactListenerRegisted;
 
-	private DemoHelper() {
+	private SuperWeChatHelper() {
 	}
 
-	public synchronized static DemoHelper getInstance() {
+	public synchronized static SuperWeChatHelper getInstance() {
 		if (instance == null) {
-			instance = new DemoHelper();
+			instance = new SuperWeChatHelper();
 		}
 		return instance;
 	}
@@ -460,7 +461,7 @@ public class DemoHelper {
             msg.setReason(reason);
             msg.setGroupInviter(inviter);
             Log.d(TAG, "receive invitation to join the group：" + groupName);
-            msg.setStatus(InviteMesageStatus.GROUPINVITATION);
+            msg.setStatus(InviteMessage.InviteMesageStatus.GROUPINVITATION);
             notifyNewInviteMessage(msg);
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_GROUP_CHANAGED));
         }
@@ -491,7 +492,7 @@ public class DemoHelper {
             msg.setReason(reason);
             msg.setGroupInviter(invitee);
             Log.d(TAG, invitee + "Accept to join the group：" + _group == null ? groupId : _group.getGroupName());
-            msg.setStatus(InviteMesageStatus.GROUPINVITATION_ACCEPTED);
+            msg.setStatus(InviteMessage.InviteMesageStatus.GROUPINVITATION_ACCEPTED);
             notifyNewInviteMessage(msg);
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_GROUP_CHANAGED));
         }
@@ -520,7 +521,7 @@ public class DemoHelper {
             msg.setReason(reason);
             msg.setGroupInviter(invitee);
             Log.d(TAG, invitee + "Declined to join the group：" + group.getGroupName());
-            msg.setStatus(InviteMesageStatus.GROUPINVITATION_DECLINED);
+            msg.setStatus(InviteMessage.InviteMesageStatus.GROUPINVITATION_DECLINED);
             notifyNewInviteMessage(msg);
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_GROUP_CHANAGED));
         }
@@ -548,7 +549,7 @@ public class DemoHelper {
             msg.setGroupName(groupName);
             msg.setReason(reason);
             Log.d(TAG, applyer + " Apply to join group：" + groupName);
-            msg.setStatus(InviteMesageStatus.BEAPPLYED);
+            msg.setStatus(InviteMessage.InviteMesageStatus.BEAPPLYED);
             notifyNewInviteMessage(msg);
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_GROUP_CHANAGED));
         }
@@ -622,7 +623,7 @@ public class DemoHelper {
 
         @Override
         public void onContactDeleted(String username) {
-            Map<String, EaseUser> localUsers = DemoHelper.getInstance().getContactList();
+            Map<String, EaseUser> localUsers = SuperWeChatHelper.getInstance().getContactList();
             localUsers.remove(username);
             userDao.deleteContact(username);
             inviteMessgeDao.deleteMessage(username);
@@ -646,7 +647,7 @@ public class DemoHelper {
             msg.setReason(reason);
             Log.d(TAG, username + "apply to be your friend,reason: " + reason);
             // set invitation status
-            msg.setStatus(InviteMesageStatus.BEINVITEED);
+            msg.setStatus(InviteMessage.InviteMesageStatus.BEINVITEED);
             notifyNewInviteMessage(msg);
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
@@ -664,7 +665,7 @@ public class DemoHelper {
             msg.setFrom(username);
             msg.setTime(System.currentTimeMillis());
             Log.d(TAG, username + "accept your request");
-            msg.setStatus(InviteMesageStatus.BEAGREED);
+            msg.setStatus(InviteMessage.InviteMesageStatus.BEAGREED);
             notifyNewInviteMessage(msg);
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
@@ -1234,7 +1235,7 @@ public class DemoHelper {
         setContactList(null);
         setRobotList(null);
         getUserProfileManager().reset();
-        DemoDBManager.getInstance().closeDB();
+        SuperWeChatDBManager.getInstance().closeDB();
     }
 
     public void pushActivity(Activity activity) {
