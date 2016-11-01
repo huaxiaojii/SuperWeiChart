@@ -1,15 +1,12 @@
-package com.hyphenate.chatuidemo.ui;
+package cn.ucai.superwechat.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.animation.AlphaAnimation;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chatuidemo.DemoHelper;
-import com.hyphenate.chatuidemo.R;
-import com.hyphenate.util.EasyUtils;
+
+import cn.ucai.superwechat.DemoHelper;
+
 
 /**
  * 开屏页
@@ -23,14 +20,6 @@ public class SplashActivity extends BaseActivity {
 	protected void onCreate(Bundle arg0) {
 		setContentView(R.layout.em_activity_splash);
 		super.onCreate(arg0);
-
-		RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.splash_root);
-		TextView versionText = (TextView) findViewById(R.id.tv_version);
-
-		versionText.setText(getVersion());
-		AlphaAnimation animation = new AlphaAnimation(0.3f, 1.0f);
-		animation.setDuration(1500);
-		rootLayout.startAnimation(animation);
 	}
 
 	@Override
@@ -53,14 +42,8 @@ public class SplashActivity extends BaseActivity {
 							e.printStackTrace();
 						}
 					}
-					String topActivityName = EasyUtils.getTopActivityName(EMClient.getInstance().getContext());
-					if (topActivityName != null && (topActivityName.equals(VideoCallActivity.class.getName()) || topActivityName.equals(VoiceCallActivity.class.getName()))) {
-						// nop
-						// avoid main screen overlap Calling Activity
-					} else {
-						//enter main screen
-						startActivity(new Intent(SplashActivity.this, MainActivity.class));
-					}
+					//enter main screen
+					startActivity(new Intent(SplashActivity.this, MainActivity.class));
 					finish();
 				}else {
 					try {
@@ -74,11 +57,11 @@ public class SplashActivity extends BaseActivity {
 		}).start();
 
 	}
-	
+
 	/**
 	 * get sdk version
 	 */
 	private String getVersion() {
-	    return EMClient.getInstance().getChatConfig().getVersion();
+		return EMClient.getInstance().getChatConfig().getVersion();
 	}
 }
