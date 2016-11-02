@@ -21,6 +21,7 @@ public class SplashActivity extends BaseActivity {
 	private static final int sleepTime = 2000;
 	SplashActivity mContext;
 
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		setContentView(R.layout.em_activity_splash);
