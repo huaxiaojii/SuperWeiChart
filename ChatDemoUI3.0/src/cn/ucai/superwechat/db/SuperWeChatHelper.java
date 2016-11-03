@@ -1,18 +1,3 @@
-/**
- * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *     http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package cn.ucai.superwechat.db;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +24,9 @@ import java.util.UUID;
 
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.SuperWeChatModel;
+import cn.ucai.superwechat.db.InviteMessgeDao;
+import cn.ucai.superwechat.db.SuperWeChatDBManager;
+import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EmojiconExampleGroupData;
 import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.RobotUser;
@@ -83,6 +71,7 @@ public class SuperWeChatHelper {
 	private SuperWeChatModel demoModel = null;
 
 	private User currentUser = null;
+	private Map<String, User> appContactList;
 
 	/**
 	 * sync groups status listener
@@ -205,6 +194,11 @@ public class SuperWeChatHelper {
 			@Override
 			public EaseUser getUser(String username) {
 				return getUserInfo(username);
+			}
+
+			@Override
+			public User getAppUser(String username) {
+				return getAppUserInfo(username);
 			}
 		});
 
@@ -713,6 +707,20 @@ public class SuperWeChatHelper {
 		return user;
 	}
 
+	private User getAppUserInfo(String username){
+		// To get instance of EaseUser, here we get it from the user list in memory
+		// You'd better cache it if you get it from your server
+		User user = null;
+		user = getAppContactList().get(username);
+
+		// if user is not in your contacts, set inital letter for him/her
+		if(user == null){
+			user = new User(username);
+			EaseCommonUtils.setAppUserInitialLetter(user);
+		}
+		return user;
+	}
+
 	/**
 	 * Global listener
 	 * If this event already handled by an activity, you don't need handle it again
@@ -837,7 +845,7 @@ public class SuperWeChatHelper {
 	/**
 	 * update contact list
 	 *
-	 * @param contactList
+	 * @param aContactList
 	 */
 	public void setContactList(Map<String, EaseUser> aContactList) {
 		if(aContactList == null){
@@ -909,7 +917,7 @@ public class SuperWeChatHelper {
 	/**
 	 * update user list to cache and database
 	 *
-	 * @param contactList
+	 * @param contactInfoList
 	 */
 	public void updateContactList(List<EaseUser> contactInfoList) {
 		for (EaseUser u : contactInfoList) {
@@ -1243,5 +1251,60 @@ public class SuperWeChatHelper {
 
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
+	}
+
+	/**
+	 * update contact list
+	 *
+	 * @param aContactList
+	 */
+	public void setAppContactList(Map<String, User> aContactList) {
+		if(aContactList == null){
+			if (appContactList != null) {
+				appContactList.clear();
+			}
+			return;
+		}
+
+		appContactList = aContactList;
+	}
+
+	/**
+	 * save single contact
+	 */
+	public void saveAppContact(User user){
+		appContactList.put(user.getMUserName(), user);
+		demoModel.saveAppContact(user);
+	}
+
+	/**
+	 * get contact list
+	 *
+	 * @return
+	 */
+	public Map<String, User> getAppContactList() {
+		if (isLoggedIn() && appContactList == null) {
+			appContactList = demoModel.getAppContactList();
+		}
+
+		// return a empty non-null object to avoid app crash
+		if(appContactList == null){
+			return new Hashtable<String, User>();
+		}
+
+		return appContactList;
+	}
+	/**
+	 * update user list to cache and database
+	 *
+	 * @param contactInfoList
+	 */
+	public void updateAppContactList(List<User> contactInfoList) {
+		for (User u : contactInfoList) {
+			appContactList.put(u.getMUserName(), u);
+		}
+		ArrayList<User> mList = new ArrayList<User>();
+		mList.addAll(appContactList.values());
+		demoModel.saveAppContactList(mList);
 	}
 }
