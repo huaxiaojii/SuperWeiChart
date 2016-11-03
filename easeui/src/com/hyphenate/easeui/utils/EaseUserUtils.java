@@ -1,9 +1,9 @@
 package com.hyphenate.easeui.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.controller.EaseUI;
@@ -12,6 +12,7 @@ import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 
 public class EaseUserUtils {
+    private static final String TAG = EaseUserUtils.class.getSimpleName();
 
     static EaseUserProfileProvider userProvider;
 
@@ -62,6 +63,7 @@ public class EaseUserUtils {
     public static void setUserNick(String username,TextView textView){
         if(textView != null){
             EaseUser user = getUserInfo(username);
+            Log.e(TAG,"user="+user);
             if(user != null && user.getNick() != null){
                 textView.setText(user.getNick());
             }else{

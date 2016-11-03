@@ -28,9 +28,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyphenate.EMCallBack;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.chatuidemo.R;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 
@@ -154,6 +151,13 @@ public class LoginActivity extends BaseActivity {
 
 		loginEMServer();
 	}
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		if (pd!=null){
+			pd.dismiss();
+		}
+	}
 
 	private void loginEMServer() {
 		// After logout，the DemoDB may still be accessed due to async callback, so the DemoDB will be re-opened again.
@@ -258,6 +262,9 @@ public class LoginActivity extends BaseActivity {
 		super.onResume();
 		if (autoLogin) {
 			return;
+		}
+		if (SuperWeChatHelper.getInstance().getCurrentUsernName() != null) {
+			mEtUsername.setText(SuperWeChatHelper.getInstance().getCurrentUsernName());
 		}
 	}
 
