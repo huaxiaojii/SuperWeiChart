@@ -132,4 +132,10 @@ public class EaseUserUtils {
     public static void setAppUserName(String suffix, String username, TextView textView) {
         textView.setText(suffix + username);
     }
+    public static User getCurrentAppUserInfo(){
+        String username = EMClient.getInstance().getCurrentUser();
+        if(userProvider != null)
+            return userProvider.getAppUser(username);
+        return null;
+    }
 }
