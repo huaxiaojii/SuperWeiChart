@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hyphenate.chatuidemo.ui;
+package cn.ucai.superwechat.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -35,13 +35,14 @@ import com.easemob.redpacketui.utils.RedPacketUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
-import com.hyphenate.chatuidemo.Constant;
-import com.hyphenate.chatuidemo.DemoHelper;
-import com.hyphenate.chatuidemo.DemoModel;
 import com.hyphenate.chatuidemo.R;
-import com.hyphenate.chatuidemo.utils.PreferenceManager;
 import com.hyphenate.easeui.widget.EaseSwitchButton;
 import com.hyphenate.util.EMLog;
+
+import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.DemoModel;
+import cn.ucai.superwechat.SuperWeChatHelper;
+import cn.ucai.superwechat.utils.PreferenceManager;
 
 /**
  * settings screen
@@ -147,7 +148,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		switch_auto_accept_group_invitation = (EaseSwitchButton) getView().findViewById(R.id.switch_auto_accept_group_invitation);
 		switch_adaptive_video_encode = (EaseSwitchButton) getView().findViewById(R.id.switch_adaptive_video_encode);
 		switch_offline_call_push = (EaseSwitchButton) getView().findViewById(R.id.switch_offline_call_push);
-		LinearLayout llChange = (LinearLayout) getView().findViewById(R.id.ll_change);
 		logoutBtn = (Button) getView().findViewById(R.id.btn_logout);
 		if(!TextUtils.isEmpty(EMClient.getInstance().getCurrentUser())){
 			logoutBtn.setText(getString(R.string.button_logout) + "(" + EMClient.getInstance().getCurrentUser() + ")");
@@ -164,7 +164,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		pushNick=(LinearLayout) getView().findViewById(R.id.ll_set_push_nick);
 		edit_custom_appkey = (EditText) getView().findViewById(R.id.edit_custom_appkey);
 
-		settingsModel = DemoHelper.getInstance().getModel();
+		settingsModel = SuperWeChatHelper.getInstance().getModel();
 		chatOptions = EMClient.getInstance().getOptions();
 		
 		blacklistContainer.setOnClickListener(this);
@@ -184,7 +184,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		rl_switch_auto_accept_group_invitation.setOnClickListener(this);
 		rl_switch_adaptive_video_encode.setOnClickListener(this);
 		rl_switch_offline_call_push.setOnClickListener(this);
-		llChange.setOnClickListener(this);
 
 		// the vibrate and sound notification are allowed or not?
 		if (settingsModel.getSettingMsgNotification()) {
@@ -279,11 +278,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			//red packet code : 进入零钱页面
-			case R.id.ll_change:
-				RedPacketUtil.startChangeActivity(getActivity());
-				break;
-			//end of red packet code
+
 			case R.id.rl_switch_notification:
 				if (notifySwitch.isSwitchOpen()) {
 					notifySwitch.closeSwitch();
@@ -435,7 +430,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		pd.setMessage(st);
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
-		DemoHelper.getInstance().logout(false,new EMCallBack() {
+		SuperWeChatHelper.getInstance().logout(false,new EMCallBack() {
 			
 			@Override
 			public void onSuccess() {
