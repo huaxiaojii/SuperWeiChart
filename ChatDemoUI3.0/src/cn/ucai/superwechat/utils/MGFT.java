@@ -1,10 +1,12 @@
 package cn.ucai.superwechat.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import cn.ucai.superwechat.ui.LoginActivity;
 import cn.ucai.superwechat.ui.RegisterActivity;
+import cn.ucai.superwechat.ui.UserProfileActivity;
 
 /**
  * Created by User on 2016/11/2.
@@ -22,7 +24,7 @@ public class MGFT {
         startActivity(context,intent);
     }
 
-    public static void startActivity(Context context,Intent intent){
+    public static void startActivity(Context context, Intent intent){
         context.startActivity(intent);
         ((Activity)context).overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
     }
@@ -40,5 +42,8 @@ public class MGFT {
     public static void gotoRegister(Activity context){
         startActivity(context, RegisterActivity.class);
     }
+    public static void gotoUserProfile(Activity context){
+        startActivity(context, UserProfileActivity.class);
+    }
 }
-}
+
