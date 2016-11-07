@@ -15,18 +15,15 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.easemob.redpacketui.utils.RedPacketUtil;
-
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 
-
 import cn.ucai.superwechat.Constant;
-
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.adapter.MainTabAdpter;
 import cn.ucai.superwechat.db.InviteMessgeDao;
@@ -65,6 +62,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 	private boolean isCurrentAccountRemoved = false;
 
 	MainTabAdpter adapter;
+	TitlePopup mTitlePopup;
 
 
 	/**
@@ -194,7 +192,30 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		mLayoutTabhost.setChecked(0);
 		mLayoutTabhost.setOnCheckedChangeListener(this);
 		mLayoutViewpage.setOnPageChangeListener(this);
+		mTitlePopup = new TitlePopup(this, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		mTitlePopup.addAction(new ActionItem(this, R.string.menu_groupchat, R.drawable.icon_menu_group));
+		mTitlePopup.addAction(new ActionItem(this, R.string.menu_addfriend, R.drawable.icon_menu_addfriend));
+		mTitlePopup.addAction(new ActionItem(this, R.string.menu_qrcode, R.drawable.icon_menu_sao));
+		mTitlePopup.addAction(new ActionItem(this, R.string.menu_money, R.drawable.icon_menu_money));
+		mTitlePopup.setItemOnClickListener(mOnItemOnClickListener);
 	}
+	TitlePopup.OnItemOnClickListener mOnItemOnClickListener = new TitlePopup.OnItemOnClickListener() {
+		@Override
+		public void onItemClick(ActionItem item, int position) {
+			switch (position){
+				case 0:
+					break;
+				case 1:
+					MFGT.gotoAddFirent(MainActivity.this);
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+			}
+		}
+	};
+
 
 
 	EMMessageListener messageListener = new EMMessageListener() {
@@ -409,6 +430,14 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		int unreadAddressCountTotal = 0;
 		unreadAddressCountTotal = inviteMessgeDao.getUnreadMessagesCount();
 		return unreadAddressCountTotal;
+	}
+	public void onCheckedChange(int checkedPosition, boolean byUser) {
+		mLayoutViewpage.setCurrentItem(checkedPosition, false);
+	}
+	@OnClick(R.id.img_right)
+	public void showPop() {
+		mTitlePopup.show(findViewById(R.id.layout_title));
+
 	}
 
 	/**
