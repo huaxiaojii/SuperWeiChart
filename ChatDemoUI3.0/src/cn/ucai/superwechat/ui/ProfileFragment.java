@@ -1,11 +1,7 @@
 package cn.ucai.superwechat.ui;
 
-/**
- * Created by User on 2016/11/6.
- */
-
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +11,16 @@ import android.widget.TextView;
 import com.easemob.redpacketui.utils.RedPacketUtil;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.utils.MFGT;
+
+/**
+ * Created by clawpo on 2016/11/4.
+ */
 
 public class ProfileFragment extends Fragment {
     @BindView(R.id.iv_profile_avatar)
@@ -62,11 +67,6 @@ public class ProfileFragment extends Fragment {
                 break;
         }
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        setUserInfo();
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -77,4 +77,10 @@ public class ProfileFragment extends Fragment {
             outState.putBoolean(Constant.ACCOUNT_REMOVED, true);
         }
     }
+
+    @Override
+        public void onResume() {
+                super.onResume();
+                setUserInfo();
+            }
 }

@@ -2,13 +2,10 @@ package cn.ucai.superwechat.utils;
 
 import android.widget.Toast;
 
-import com.baidu.platform.comapi.map.I;
-
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 
-/**
- * Created by User on 2016/11/2.
- */
 
 public class CommonUtils {
     public static void showLongToast(String msg){
@@ -24,14 +21,11 @@ public class CommonUtils {
         showShortToast(SuperWeChatApplication.applicationContext.getString(rId));
     }
 
-    public static void showMsgShortToast(int msgId){
-        if(msgId>0) {
-            showShortToast(SuperWeChatApplication.getInstance().getResources()
-                    .getIdentifier(I.MSG_PREFIX_MSG+msgId,"string",
-                            SuperWeChatApplication.getInstance().getPackageName()));
-        }else{
+    public static void showMsgShortToast(int msgid) {
+        if (msgid > 0) {
+            showShortToast(SuperWeChatApplication.getInstance().getResources().getIdentifier(I.MSG_PREFIX_MSG + msgid, "string", SuperWeChatApplication.getInstance().getPackageName()));
+        } else {
             showShortToast(R.string.msg_1);
         }
-
     }
 }

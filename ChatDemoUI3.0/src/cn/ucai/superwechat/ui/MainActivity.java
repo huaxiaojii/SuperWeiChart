@@ -1,3 +1,16 @@
+/**
+ * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cn.ucai.superwechat.ui;
 
 import android.annotation.SuppressLint;
@@ -13,6 +26,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,22 +36,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.easemob.redpacketui.RedPacketConstant;
 import com.easemob.redpacketui.utils.RedPacketUtil;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.EMContactListener;
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMConversation.EMConversationType;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
+import com.hyphenate.util.EMLog;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.adapter.MainTabAdpter;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.db.UserDao;
+import cn.ucai.superwechat.dialog.TitleMenu.ActionItem;
+import cn.ucai.superwechat.dialog.TitleMenu.TitlePopup;
 import cn.ucai.superwechat.runtimepermissions.PermissionsManager;
 import cn.ucai.superwechat.runtimepermissions.PermissionsResultAction;
+import cn.ucai.superwechat.utils.L;
+import cn.ucai.superwechat.utils.MFGT;
 import cn.ucai.superwechat.widget.DMTabHost;
 import cn.ucai.superwechat.widget.MFViewPager;
-import cn.ucai.superwechat.widget.ViewPager;
 
 @SuppressLint("NewApi")
-public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedChangeListener,ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
 
 	protected static final String TAG = "MainActivity";
 	//	// textview for unread message count
@@ -44,10 +81,10 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 //	private TextView unreadAddressLable;
 //
 //	private Button[] mTabs;
-//	private ContactListFragment contactListFragment;
-//	private Fragment[] fragments;
+	private ContactListFragment contactListFragment;
+	//	private Fragment[] fragments;
 //	private int index;
-//	private int currentTabIndex;
+	private int currentTabIndex;
 	// user logged into another device
 	public boolean isConflict = false;
 	@BindView(R.id.txt_left)
@@ -62,6 +99,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 	private boolean isCurrentAccountRemoved = false;
 
 	MainTabAdpter adapter;
+
 	TitlePopup mTitlePopup;
 
 
@@ -83,6 +121,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		ButterKnife.bind(this);
 		// runtime permission for android 6.0, just require all permissions here for simple
 		requestPermissions();
+		contactListFragment = new ContactListFragment();
 		initView();
 		umeng();
 
@@ -92,7 +131,6 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		inviteMessgeDao = new InviteMessgeDao(this);
 		UserDao userDao = new UserDao(this);
 //		conversationListFragment = new ConversationListFragment();
-//		contactListFragment = new ContactListFragment();
 //		SettingsFragment settingFragment = new SettingsFragment();
 //		fragments = new Fragment[] { conversationListFragment, contactListFragment, settingFragment};
 //
@@ -184,20 +222,21 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		adapter.clear();
 		mLayoutViewpage.setAdapter(adapter);
 		mLayoutViewpage.setOffscreenPageLimit(4);
-		adapter.addFragment(new ConversationListFragment(),getString(R.string.app_name));
-		adapter.addFragment(new ContactListFragment(),getString(R.string.contacts));
-		adapter.addFragment(new DiscoverFragment(),getString(R.string.discover));
-		adapter.addFragment(new ProfileFragment(),getString(R.string.me));
+		adapter.addFragment(new ConversationListFragment(), getString(R.string.app_name));
+		adapter.addFragment(contactListFragment, getString(R.string.contacts));
+		adapter.addFragment(new DiscoverFragment(), getString(R.string.discover));
+		adapter.addFragment(new ProfileFragment(), getString(R.string.me));
 		adapter.notifyDataSetChanged();
+		currentTabIndex = 0;
 		mLayoutTabhost.setChecked(0);
 		mLayoutTabhost.setOnCheckedChangeListener(this);
 		mLayoutViewpage.setOnPageChangeListener(this);
 		mTitlePopup = new TitlePopup(this, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		mTitlePopup.setItemOnClickListener(mOnItemOnClickListener);
 		mTitlePopup.addAction(new ActionItem(this, R.string.menu_groupchat, R.drawable.icon_menu_group));
 		mTitlePopup.addAction(new ActionItem(this, R.string.menu_addfriend, R.drawable.icon_menu_addfriend));
 		mTitlePopup.addAction(new ActionItem(this, R.string.menu_qrcode, R.drawable.icon_menu_sao));
 		mTitlePopup.addAction(new ActionItem(this, R.string.menu_money, R.drawable.icon_menu_money));
-		mTitlePopup.setItemOnClickListener(mOnItemOnClickListener);
 	}
 	TitlePopup.OnItemOnClickListener mOnItemOnClickListener = new TitlePopup.OnItemOnClickListener() {
 		@Override
@@ -206,7 +245,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 				case 0:
 					break;
 				case 1:
-					MFGT.gotoAddFirent(MainActivity.this);
+					MFGT.gotoAddFirend(MainActivity.this);
 					break;
 				case 2:
 					break;
@@ -215,7 +254,6 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 			}
 		}
 	};
-
 
 
 	EMMessageListener messageListener = new EMMessageListener() {
@@ -293,11 +331,12 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 //                    if (conversationListFragment != null) {
 //                        conversationListFragment.refresh();
 //                    }
-//                } else if (currentTabIndex == 1) {
-//                    if(contactListFragment != null) {
-//                        contactListFragment.refresh();
-//                    }
-//                }
+//                } else
+				if (currentTabIndex == 1) {
+					if(contactListFragment != null) {
+						contactListFragment.refresh();
+					}
+				}
 				String action = intent.getAction();
 				if (action.equals(Constant.ACTION_GROUP_CHANAGED)) {
 					if (EaseCommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
@@ -323,6 +362,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 
 	@Override
 	public void onPageSelected(int position) {
+		currentTabIndex = position;
 		mLayoutTabhost.setChecked(position);
 		mLayoutViewpage.setCurrentItem(position);
 	}
@@ -334,7 +374,13 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 
 	@Override
 	public void onCheckedChange(int checkedPosition, boolean byUser) {
-		mLayoutViewpage.setCurrentItem(checkedPosition,false);
+		currentTabIndex = checkedPosition;
+		mLayoutViewpage.setCurrentItem(checkedPosition, false);
+	}
+
+	@OnClick(R.id.img_right)
+	public void showPop() {
+		mTitlePopup.show(findViewById(R.id.layout_title));
 	}
 
 	public class MyContactListener implements EMContactListener {
@@ -411,11 +457,12 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		runOnUiThread(new Runnable() {
 			public void run() {
 				int count = getUnreadAddressCountTotal();
-//				if (count > 0) {
-//					unreadAddressLable.setVisibility(View.VISIBLE);
-//				} else {
-//					unreadAddressLable.setVisibility(View.INVISIBLE);
-//				}
+				L.e(TAG,"updateUnreadAddressLable,count="+count);
+				if (count > 0) {
+					mLayoutTabhost.setHasNew(1, true);
+				} else {
+					mLayoutTabhost.setHasNew(1, false);
+				}
 			}
 		});
 
@@ -430,14 +477,6 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		int unreadAddressCountTotal = 0;
 		unreadAddressCountTotal = inviteMessgeDao.getUnreadMessagesCount();
 		return unreadAddressCountTotal;
-	}
-	public void onCheckedChange(int checkedPosition, boolean byUser) {
-		mLayoutViewpage.setCurrentItem(checkedPosition, false);
-	}
-	@OnClick(R.id.img_right)
-	public void showPop() {
-		mTitlePopup.show(findViewById(R.id.layout_title));
-
 	}
 
 	/**

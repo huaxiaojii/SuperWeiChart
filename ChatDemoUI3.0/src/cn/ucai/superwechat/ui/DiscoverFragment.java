@@ -1,20 +1,21 @@
 package cn.ucai.superwechat.ui;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by User on 2016/11/3.
- */
+import cn.ucai.superwechat.R;
 
+/**
+ * Created by clawpo on 2016/9/22.
+ */
 public class DiscoverFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_discover, container, false);
+        return inflater.inflate(R.layout.fragment_dicover, container, false);
     }
 
 //    //朋友圈点击事件

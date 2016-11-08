@@ -224,8 +224,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 				break;
 			case REQUESTCODE_CUTTING:
 				if (data != null) {
+					//setPicToView(data);
 					updateAppUserAvatar(data);
-//                    setPicToView(data);
 				}
 				break;
 			default:
@@ -269,6 +269,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		});
 	}
 
+
 	public void startPhotoZoom(Uri uri) {
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
@@ -293,15 +294,16 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			Bitmap photo = extras.getParcelable("data");
 			Drawable drawable = new BitmapDrawable(getResources(), photo);
 			mIvUserinfoAvatar.setImageDrawable(drawable);
-//			uploadUserAvatar(Bitmap2Bytes(photo));
 			dialog.dismiss();
 			Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_success),
 					Toast.LENGTH_SHORT).show();
+//			uploadUserAvatar(Bitmap2Bytes(photo));
 		}
 
 	}
 
 	private void uploadUserAvatar(final byte[] data) {
+//		dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
 		new Thread(new Runnable() {
 
 			@Override
@@ -325,6 +327,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			}
 		}).start();
 
+//		dialog.show();
 	}
 
 
@@ -369,7 +372,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 				break;
 		}
 	}
-
 	public File saveBitmapFile(Intent picdata) {
 		Bundle extras = picdata.getExtras();
 		if (extras != null) {
@@ -389,4 +391,5 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		}
 		return null;
 	}
+
 }

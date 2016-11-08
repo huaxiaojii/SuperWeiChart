@@ -13,7 +13,7 @@
  */
 package com.hyphenate.easeui.domain;
 
-import com.hyphenate.chat.EMContact;
+
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 
 public class EaseUser extends EMContact {
@@ -67,5 +67,17 @@ public class EaseUser extends EMContact {
 	@Override
 	public String toString() {
 		return nick == null ? username : nick;
+	}
+
+	public byte[] getUsername() {
+		return username;
+	}
+
+	public byte[] getNick() {
+		return nick;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
 	}
 }

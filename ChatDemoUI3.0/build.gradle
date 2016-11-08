@@ -22,19 +22,20 @@ allprojects {
 android {
     compileSdkVersion 23
     buildToolsVersion "24.0.1"
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.squareup.okio:okio:1.10.0'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.4.1'
-    compile 'com.google.code.gson:gson:2.7'
+
+
+
 
 
     defaultConfig {
-        applicationId "com.hyphenate.chatuidemo"
+        applicationId "cn.ucai.superwechat"
         minSdkVersion 19
         targetSdkVersion 24
         multiDexEnabled true
+    }
+    dexOptions {
+        maxProcessCount 4 // this is the default value
+        javaMaxHeapSize "2g"
     }
 
     sourceSets {
@@ -78,8 +79,7 @@ dependencies {
     //    compile ('com.anthonycr.grant:permissions:1.0'){
     //        exclude module: 'support-v4'
     //    }
-//    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'org.codehaus.mojo.groovy.support:support:1.0-beta-3'
+    //    compile 'com.android.support:appcompat-v7:24.2.1'
 }
 
 android {

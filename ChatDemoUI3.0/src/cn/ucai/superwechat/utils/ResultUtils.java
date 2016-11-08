@@ -1,9 +1,13 @@
 package cn.ucai.superwechat.utils;
 
 import android.util.Log;
+
+
 import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -13,9 +17,8 @@ import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.bean.Result;
 
 /**
- * Created by User on 2016/11/2.
+ * Created by clawpo on 2016/9/21.
  */
-
 public class ResultUtils {
     public static <T> Result getResultFromJson(String jsonStr,Class<T> clazz){
         Result result = new Result();
