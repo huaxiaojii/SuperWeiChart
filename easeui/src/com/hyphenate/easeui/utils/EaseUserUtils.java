@@ -15,6 +15,10 @@ import com.hyphenate.easeui.controller.EaseUI.EaseUserProfileProvider;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 
+import static android.R.attr.path;
+import static com.hyphenate.easeui.R.id.avatar;
+import static com.hyphenate.easeui.R.string.set;
+
 public class EaseUserUtils {
     private static final String TAG = EaseUserUtils.class.getSimpleName();
 
@@ -141,5 +145,22 @@ public class EaseUserUtils {
         if(userProvider != null)
             return userProvider.getAppUser(username);
         return null;
+    }
+    /*
+    * set user avatar
+    * @param path
+    */
+    public static void setAppUserPathAvatar(Context context, String path, ImageView imageView){
+        if(path != null){
+            try {
+                int avatarResId = Integer.parseInt(path);
+                Glide.with(context).load(avatarResId).into(imageView);
+            } catch (Exception e) {
+                //use default avatar
+                Glide.with(context).load(path).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.default_hd_avatar).into(imageView);
+            }
+        }else{
+            Glide.with(context).load(R.drawable.default_hd_avatar).into(imageView);
+        }
     }
 }
