@@ -6,7 +6,6 @@ import java.io.File;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.bean.Result;
-import cn.ucai.superwechat.ui.AddContactActivity;
 import cn.ucai.superwechat.utils.MD5;
 
 
@@ -74,6 +73,14 @@ public class NetDao {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_FIND_USER)
                 .addParam(I.User.USER_NAME,username)
+                .targetClass(String.class)
+                .execute(listener);
+    }
+    public static void addContact(Context context, String username, String cusername, OkHttpUtils.OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_ADD_CONTACT)
+                .addParam(I.Contact.USER_NAME,username)
+                .addParam(I.Contact.CU_NAME,cusername)
                 .targetClass(String.class)
                 .execute(listener);
     }
