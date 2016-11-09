@@ -217,6 +217,7 @@ public class ContactListFragment extends EaseContactListFragment {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
+        L.e(TAG,"onContextItemSelected..."+item.getItemId());
 		if (item.getItemId() == R.id.delete_contact) {
 			try {
                 // delete contact
