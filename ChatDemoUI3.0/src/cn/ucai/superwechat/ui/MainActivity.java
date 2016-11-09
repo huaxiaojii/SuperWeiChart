@@ -121,6 +121,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		ButterKnife.bind(this);
 		// runtime permission for android 6.0, just require all permissions here for simple
 		requestPermissions();
+		conversationListFragment = new ConversationListFragment();
 		contactListFragment = new ContactListFragment();
 		initView();
 		umeng();
@@ -222,7 +223,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		adapter.clear();
 		mLayoutViewpage.setAdapter(adapter);
 		mLayoutViewpage.setOffscreenPageLimit(4);
-		adapter.addFragment(new ConversationListFragment(), getString(R.string.app_name));
+		adapter.addFragment(conversationListFragment, getString(R.string.app_name));
 		adapter.addFragment(contactListFragment, getString(R.string.contacts));
 		adapter.addFragment(new DiscoverFragment(), getString(R.string.discover));
 		adapter.addFragment(new ProfileFragment(), getString(R.string.me));
@@ -305,12 +306,19 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 //						conversationListFragment.refresh();
 //					}
 //				}
+				if (currentTabIndex == 0) {
+					// refresh conversation list
+					if (conversationListFragment != null) {
+						conversationListFragment.refresh();
+					}
+				}
 			}
 		});
 	}
 
 	@Override
 	public void back(View view) {
+
 		super.back(view);
 	}
 
@@ -333,6 +341,12 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 //                    }
 //                } else
 				if (currentTabIndex == 1) {
+					if (currentTabIndex == 0) {
+						// refresh conversation list
+						if (conversationListFragment != null) {
+							conversationListFragment.refresh();
+						}
+					} else if (currentTabIndex == 1) {
 					if(contactListFragment != null) {
 						contactListFragment.refresh();
 					}
@@ -539,14 +553,14 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private AlertDialog.Builder conflictBuilder;
-	private AlertDialog.Builder accountRemovedBuilder;
-	private boolean isConflictDialogShow;
-	private boolean isAccountRemovedDialogShow;
-	private BroadcastReceiver internalDebugReceiver;
-	private ConversationListFragment conversationListFragment;
-	private BroadcastReceiver broadcastReceiver;
-	private LocalBroadcastManager broadcastManager;
+//	private AlertDialog.Builder conflictBuilder;
+//	private AlertDialog.Builder accountRemovedBuilder;
+//	private boolean isConflictDialogShow;
+//	private boolean isAccountRemovedDialogShow;
+//	private BroadcastReceiver internalDebugReceiver;
+//	private ConversationListFragment conversationListFragment;
+//	private BroadcastReceiver broadcastReceiver;
+//	private LocalBroadcastManager broadcastManager;
 
 	/**
 	 * show the dialog when user logged into another device
