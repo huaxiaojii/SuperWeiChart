@@ -57,6 +57,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.adapter.MainTabAdpter;
@@ -346,11 +347,11 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 						if (conversationListFragment != null) {
 							conversationListFragment.refresh();
 						}
-					} else if (currentTabIndex == 1) {
+//					} else if (currentTabIndex == 1) {
 					if(contactListFragment != null) {
 						contactListFragment.refresh();
 					}
-				}
+//				}
 				String action = intent.getAction();
 				if (action.equals(Constant.ACTION_GROUP_CHANAGED)) {
 					if (EaseCommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
@@ -519,6 +520,11 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 			updateUnreadLabel();
 			updateUnreadAddressLable();
 		}
+		boolean extra = getIntent().getBooleanExtra(I.ACTION_BACK_CONVERSATION, false);
+		L.e(TAG,"extra="+extra);
+		if(extra){
+			mLayoutTabhost.setChecked(0);
+		}
 
 		// unregister this event listener when this activity enters the
 		// background
@@ -643,6 +649,11 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 			showAccountRemovedDialog();
 		}
 	}
+			boolean isBack = intent.getBooleanExtra(I.ACTION_BACK_CONVERSATION, false);
+			L.e(TAG,"isBack="+isBack);
+			if(isBack){
+				mLayoutTabhost.setChecked(0);
+			}
 
 	/**
 	 * debug purpose only, you can ignore this
